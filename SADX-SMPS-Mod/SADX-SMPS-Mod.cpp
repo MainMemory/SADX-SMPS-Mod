@@ -3,11 +3,10 @@
 
 #include "stdafx.h"
 #include "..\mod-loader-common\ModLoaderCommon\IniFile.hpp"
-#include "..\sadx-mod-loader\SADXModLoader\include\SADXModLoader.h"
+#include "SADXModLoader.h"
+#include "ShoeTempoManager.h"
 using std::string;
 using std::unordered_map;
-
-#define SHOETEMPO 66
 
 BOOL(*PlaySong)(short song);
 BOOL(*StopSong)();
@@ -399,6 +398,7 @@ extern "C"
 		WriteJump((void *)0x40D0A0, ResumeSound_r);
 		WMPClose_ml = (decltype(WMPClose_ml))GetJumpAddress((void *)0x40CFF0);
 		WriteJump((void *)0x40CFF0, WMPClose_r);
+		WriteCall((void*)0x441DD8, LoadShoeTempoManager);
 	}
 
 	__declspec(dllexport) ModInfo SADXModInfo = { ModLoaderVer };
