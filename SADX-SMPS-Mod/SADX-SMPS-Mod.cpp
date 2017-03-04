@@ -30,7 +30,8 @@ int PlayMusicFile_r(const char *filename, int loop)
 
 void SongStoppedCallback()
 {
-	if (CurrentSong == 110 || CurrentSong == 111)
+	int c = CurrentSong;
+	if ((c >= 110 && c <= 112) || (c >= 117 && c <= 122))
 		RestoreLastSong();
 }
 
