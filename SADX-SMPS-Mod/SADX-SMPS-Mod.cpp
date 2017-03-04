@@ -5,6 +5,7 @@
 #include "..\mod-loader-common\ModLoaderCommon\IniFile.hpp"
 #include "SADXModLoader.h"
 #include "ShoeTempoManager.h"
+#include "InvincibilityMusicManager.h"
 using std::string;
 using std::unordered_map;
 
@@ -25,6 +26,12 @@ int PlayMusicFile_r(const char *filename, int loop)
 		return PlaySong(MusicChoices[CurrentSong]);
 	else
 		return 0;
+}
+
+void SongStoppedCallback()
+{
+	if (CurrentSong == 110 || CurrentSong == 111)
+		RestoreLastSong();
 }
 
 void WMPRestartMusic_r() {}
@@ -353,6 +360,17 @@ const string SMPSMusicList[] = {
 
 unordered_map<string, short> songmap;
 
+void PlayMusicLite(int song)
+{
+	if (*(int*)0x91268C)
+		CurrentSong = song;
+}
+
+void PlayExtraLifeMusic()
+{
+	PlaySong(MusicChoices[71]);
+}
+
 inline void *GetJumpAddress(void *address)
 {
 	return (void*)(*(int32_t*)((int8_t*)address + 1) + (uint32_t)address + 5);
@@ -373,6 +391,7 @@ extern "C"
 		}
 		((BOOL(*)())GetProcAddress(handle, "InitializeDriver"))();
 		((void(*)(double))GetProcAddress(handle, "SetVolume"))(0.5);
+		((void(*)(void(*callback)()))GetProcAddress(handle, "RegisterSongStoppedCallback"))(SongStoppedCallback);
 		PlaySong = (decltype(PlaySong))GetProcAddress(handle, "PlaySong");
 		StopSong = (decltype(StopSong))GetProcAddress(handle, "StopSong");
 		PauseSong = (decltype(PauseSong))GetProcAddress(handle, "PauseSong");
@@ -386,7 +405,17 @@ extern "C"
 		const IniGroup *grp = cfg->getGroup("");
 		for (size_t i = 0; i < LengthOfArray(SADXMusicList); i++)
 			if (grp->hasKeyNonEmpty(SADXMusicList[i]))
-				MusicChoices[i] = songmap[grp->getString(SADXMusicList[i])];
+			{
+				string str = grp->getString(SADXMusicList[i]);
+				auto found = songmap.find(str);
+				if (found != songmap.end())
+					MusicChoices[i] = found->second;
+				else
+				{
+					MusicChoices[i] = -1;
+					PrintDebug("SMPS Mod: %s is not a valid option in key %s.\n", str.c_str(), SADXMusicList[i].c_str());
+				}
+			}
 			else
 				MusicChoices[i] = -1;
 		delete cfg;
@@ -399,6 +428,11 @@ extern "C"
 		WMPClose_ml = (decltype(WMPClose_ml))GetJumpAddress((void *)0x40CFF0);
 		WriteJump((void *)0x40CFF0, WMPClose_r);
 		WriteCall((void*)0x441DD8, LoadShoeTempoManager);
+		WriteJump((void*)0x441F6F, LoadInvincibilityMusicManager);
+		WriteJump(PlayJingle, PlayMusicLite); // general fix
+		WriteCall((void*)0x470DF5, PlayMusic); // fish miss
+		if (MusicChoices[71] != -1)
+			WriteCall((void*)0x425B76, PlayExtraLifeMusic);
 	}
 
 	__declspec(dllexport) ModInfo SADXModInfo = { ModLoaderVer };
