@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModLoaderCommon", "mod-load
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmodutils", "sadx-mod-loader\libmodutils\libmodutils.vcxproj", "{90CF4AD9-6603-458F-8E3F-E99C0818E43D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SMPSConfigTool", "SMPSConfigTool\SMPSConfigTool.csproj", "{2502EF7A-57F2-4C0E-84F4-624E7FDB1CCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -31,6 +33,10 @@ Global
 		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Debug|x86.Build.0 = Debug|Win32
 		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Release|x86.ActiveCfg = Release|Win32
 		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Release|x86.Build.0 = Release|Win32
+		{2502EF7A-57F2-4C0E-84F4-624E7FDB1CCE}.Debug|x86.ActiveCfg = Debug|x86
+		{2502EF7A-57F2-4C0E-84F4-624E7FDB1CCE}.Debug|x86.Build.0 = Debug|x86
+		{2502EF7A-57F2-4C0E-84F4-624E7FDB1CCE}.Release|x86.ActiveCfg = Release|x86
+		{2502EF7A-57F2-4C0E-84F4-624E7FDB1CCE}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
